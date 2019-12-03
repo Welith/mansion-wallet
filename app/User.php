@@ -36,4 +36,22 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function hasWallet()
+    {
+        $user_wallets = Wallet::with('user')->where(['user_id' => $this->id])->first();
+        if ($user_wallets) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Shows user-wallet relationship
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function wallet()
+    {
+        return $this->$this->hasOne('App\Wallet');
+    }
 }
