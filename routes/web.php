@@ -19,3 +19,4 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/wallet', 'WalletController@index')->name('landing_page');
+Route::post('/wallet/create', 'WalletController@store')->name('confirmWalletName');

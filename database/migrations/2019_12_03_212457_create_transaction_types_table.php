@@ -17,7 +17,8 @@ class CreateTransactionTypesTable extends Migration
             $table->bigIncrements('id');
             $table->string('type')->nullable();
             $table->unsignedDecimal('fee', 5, 2)->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

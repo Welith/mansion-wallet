@@ -22,7 +22,8 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('transaction_currency')->nullable();
             $table->foreign('transaction_currency')->references('id')->on('currencies')->onDelete('cascade');
             $table->unsignedDecimal('amount', 8, 2)->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

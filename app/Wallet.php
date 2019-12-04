@@ -14,6 +14,7 @@ class Wallet extends Model
     use Notifiable;
 
     protected $table = 'user_wallets';
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.

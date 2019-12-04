@@ -19,8 +19,9 @@ class CreateCurrencyExchangeRatesTable extends Migration
             $table->foreign('currency_from')->references('id')->on('currencies')->onDelete('cascade');
             $table->unsignedBigInteger('currency_to')->nullable();
             $table->foreign('currency_to')->references('id')->on('currencies')->onDelete('cascade');
-            $table->unsignedDecimal('rate')->nullable();
-            $table->timestamps();
+            $table->unsignedDecimal('rate', 8, 6)->nullable();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 
