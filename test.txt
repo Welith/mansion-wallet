@@ -1,0 +1,1 @@
+[32mRunning scheduled command:[39m "C:\xampp\php\php.exe" "artisan" exchange:cron > "NUL" 2>&1
