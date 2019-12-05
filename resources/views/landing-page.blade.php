@@ -4,10 +4,11 @@
     <div class="container">
         <div class="card">
             <div class="card-header text-center">
-                Welcome to my test e-Wallet
+                Welcome to e-Wallet
             </div>
             <div class="card-body text-center text-justify font-weight-bold">
                 @guest
+                    Easy and convinient way to manage your savings
                     <div class="container" style="display: inline-block">
                         <a class="btn btn-lg btn-success" href="{{ route('login') }}">Login</a>or
                         <a class="btn btn-lg btn-primary" href="{{ route('register') }}">Register</a>
@@ -44,8 +45,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body mx-3">
-                    <div class="md-form mb-5 main-box">
+                <div class="modal-body mx-3 main-box">
+                    <div class="md-form mb-5">
                         <input type="text" id="walletName" class="form-control validate">
                     </div>
                 </div>

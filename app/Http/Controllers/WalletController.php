@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\WalletStoreRequest;
 use App\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -33,21 +34,24 @@ class WalletController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(WalletStoreRequest $request)
     {
-        try {
-            $wallet = new Wallet();
-            $request->validate([
-                'name' => 'required|min:3|max:255|string'
-            ]);
-            $wallet->name = $request->name;
-            $wallet->user_id = \Auth::user()->id;
-            $wallet->total_amount = 50;
-            $wallet->currency = 1;
-            $wallet->save();
-            return response()->json(['success' => 'Data is successfully added']);
-        } catch (ValidationException $exception) {
-            return response()->json(['error' => $exception->getMessage()]);
+        $wallet = new Wallet();
+        $validator = \Validator::make($request->all(), $request->rules());
+        if ($validator->fails()) {
+            if($request->ajax())
+            {
+                return response()->json(array(
+                    'errors' => $validator->errors()
+                ), 422);
+            }
         }
+        $wallet->name = $request->name;
+        $wallet->user_id = \Auth::user()->id;
+        $wallet->total_amount = 50;
+        $wallet->currency = 1;
+        $wallet->save();
+        return response()->json(['success' => 'Wallet was successfully added.']);
+
     }
 }
