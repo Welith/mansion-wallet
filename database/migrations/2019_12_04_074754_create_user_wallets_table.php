@@ -19,8 +19,8 @@ class CreateUserWalletsTable extends Migration
             $table->unsignedDecimal('total_amount', 8, 2)->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('currency')->nullable();
-            $table->foreign('currency')->references('id')->on('currencies')->onDelete('cascade');
+            $table->string('currency')->nullable();
+            $table->foreign('currency')->references('code')->on('currencies')->onDelete('cascade');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

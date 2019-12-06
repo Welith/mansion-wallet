@@ -11,12 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('landing-page');
-});
-
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/wallet', 'WalletController@index')->name('landing_page');
+Route::get('/deposit', 'TransactionController@depositView')->name('deposit');
+Route::get('/withdraw', 'TransactionController@withdrawView')->name('withdraw');
+Route::get('/{wallet?}', ['as' => 'wallet', 'uses' => 'WalletController@index']);
 Route::post('/wallet/create', 'WalletController@store')->name('confirmWalletName');
+Route::post('/deposit', 'TransactionController@depositTransaction')->name('depositTransaction');

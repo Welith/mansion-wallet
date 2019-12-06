@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Currency;
 use App\ExchangeRate;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\ClientException;
@@ -72,14 +73,10 @@ class ExchangeCron extends Command
             $response_data = json_decode($res->getBody()->getContents());
             $resp_rates = (array)$response_data->rates;
             $currency_pairs_split = explode(',', $this->currency_pairs);
-            $db_base_currency_id = \DB::table('currencies')->where(['code' => $this->base_currency])->first()->id;
-            $db_first_pair_id = \DB::table('currencies')->where(['code' => $currency_pairs_split[0]])->first()->id;
-            $db_second_pair_id = \DB::table('currencies')->where(['code' => $currency_pairs_split[1]])->first()->id;
-            // insert or update rates
-            \DB::table('currency_exchange_rates')->updateOrInsert(
-                ['currency_from' => $db_base_currency_id, 'currency_to' => $db_first_pair_id], ['rate' => $resp_rates[$currency_pairs_split[0]], 'updated_at' => Carbon::now()->toDateTimeString()]);
-            \DB::table('currency_exchange_rates')->updateOrInsert(
-                ['currency_from' => $db_base_currency_id, 'currency_to' => $db_second_pair_id], ['rate' => $resp_rates[$currency_pairs_split[1]], 'updated_at' => Carbon::now()->toDateTimeString()]);
+            foreach ($currency_pairs_split as $item)
+            {
+                $new_pair = ExchangeRate::updateOrCreate(['currency_from' => $this->base_currency, 'currency_to' => $item],['rate' => $resp_rates[$item], 'updated_at' => Carbon::now()->toDateTimeString()]);
+            }
             return "Successfully updated currency_exchange_rates table";
         } catch (ClientException $exception) {
             $response = $exception->getResponse();

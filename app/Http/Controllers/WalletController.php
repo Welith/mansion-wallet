@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Currency;
 use App\Http\Requests\WalletStoreRequest;
 use App\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * Class WalletController
+ * @package App\Http\Controllers
+ */
 class WalletController extends Controller
 {
+
     /**
      * Create a new controller instance.
      *
@@ -20,13 +26,20 @@ class WalletController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     *
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
     {
-        return view('landing-page');
+        $user = \Auth::user();
+        if ($user->hasWallet()) {
+            $user = \Auth::user();
+            $user_wallet = Wallet::where(['user_id' => $user->id])->first();
+            $wallet_currency_code = Currency::where(['code' => $user_wallet->currency])->first()->code;
+            return view('wallet', compact('user_wallet', 'wallet_currency_code', 'user'));
+        }
+        return view('landing-page', compact('user'));
     }
 
     /**
@@ -36,22 +49,23 @@ class WalletController extends Controller
      */
     public function store(WalletStoreRequest $request)
     {
-        $wallet = new Wallet();
+        // Validate input
         $validator = \Validator::make($request->all(), $request->rules());
         if ($validator->fails()) {
             if($request->ajax())
             {
-                return response()->json(array(
+                return response()->json([
                     'errors' => $validator->errors()
-                ), 422);
+                ], 422);
             }
         }
+        // Store initial walllet state
+        $wallet = new Wallet();
         $wallet->name = $request->name;
         $wallet->user_id = \Auth::user()->id;
         $wallet->total_amount = 50;
-        $wallet->currency = 1;
+        $wallet->currency = 'USD';
         $wallet->save();
-        return response()->json(['success' => 'Wallet was successfully added.']);
-
+        return response()->json(['success' => 'Wallet was successfully added.', 'data' => $request->toArray()]);
     }
 }
