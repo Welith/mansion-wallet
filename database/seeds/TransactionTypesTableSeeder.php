@@ -13,11 +13,11 @@ class TransactionTypesTableSeeder extends Seeder
     {
         DB::table('transaction_types')->insert([
             'type' => 'deposit',
-            'fee' => 0.03,
+            'fee' => 0.0003,
         ]);
         DB::table('transaction_types')->insert([
             'type' => 'withdraw',
-            'fee' => 0.3,
+            'fee' => 0.003,
         ]);
     }
 }

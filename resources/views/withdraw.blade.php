@@ -27,28 +27,31 @@
                         @endif
                     </ul>
                 </div>
-                <div class="form-row">
-                    <div class="col-md-6 mb-2">
-                        <label for="amount_req">Amount</label>
-                        <input type="number" min="0" step="0.01" class="form-control" id="amount_req" required>
+                <form action="{{route('withdrawTransaction')}}" method="POST">
+                    <div class="form-row">
+                        {{csrf_field()}}
+                        <div class="col-md-6 mb-2">
+                            <label for="amount_req">Amount</label>
+                            <input type="number" min="0" step="0.01" class="form-control" id="amount_req" name="amount" required>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="currency_select">Currency</label>
+                            @if(count($currencies))
+                                <select class="custom-select" id="currency_select" name="currency" required>
+                                    <option value="" selected>Choose...</option>
+                                    @foreach($currencies as $currency)
+                                        <option value="{{$currency->id}}">{{$currency->code}}</option>
+                                    @endforeach
+                                    @else
+                                        <option value="EUR">EUR</option>
+                                        <option value="USD">USD</option>
+                                        <option value="GBP">GBP</option>
+                                    @endif
+                                </select>
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-2">
-                        <label for="currency_select">Currency</label>
-                        @if(count($currencies))
-                            <select class="custom-select" id="currency_select" required>
-                                <option selected>Choose...</option>
-                                @foreach($currencies as $currency)
-                                    <option value="{{$currency->code}}">{{$currency->code}}</option>
-                                @endforeach
-                                @else
-                                    <option value="EUR">EUR</option>
-                                    <option value="USD">USD</option>
-                                    <option value="GBP">GBP</option>
-                                @endif
-                            </select>
-                    </div>
-                </div>
-                <button class="btn btn-primary" type="submit">Confirm Withdraw</button>
+                    <button class="btn btn-success" type="submit" role="button">Confirm Deposit</button>
+                </form>
             </div>
         </div>
     </div>

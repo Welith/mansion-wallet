@@ -39,7 +39,7 @@ $(document).ready(function () {
         });
     });
 
-    $(".alert-success").fadeTo(2000, 500).slideUp(500, function(){
-        $(".alert-success").slideUp(500);
+    $(".alert-dismissible").fadeTo(3000, 500).slideUp(500, function(){
+        $(".alert-dismissible").slideUp(500);
     });
 });

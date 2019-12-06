@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Currency;
+use App\Models\Currency;
 use App\Http\Requests\WalletStoreRequest;
-use App\Wallet;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 /**
  * Class WalletController

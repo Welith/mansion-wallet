@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -52,6 +52,6 @@ class User extends Authenticatable
      */
     public function wallet()
     {
-        return $this->hasOne('App\Wallet');
+        return $this->hasOne('App\Models\Wallet');
     }
 }

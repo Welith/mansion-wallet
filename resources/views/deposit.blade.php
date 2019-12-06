@@ -18,7 +18,7 @@
                 </div>
                 <h5 class="card-title text-center"> You can deposit amounts in the following currencies EUR, USD and
                     GBP. </h5>
-                <div class="card-text text-center"> Please note that there is a deposit fee of {{$deposit_fee}}%. <br>
+                <div class="card-text text-center"> Please note that there is a deposit fee of {{$deposit_fee}}%. (Max fee is 5EUR, 5,55USD or 4,23GBP) <br>
                     Also, the base currency for this wallet is USD, meaning that other currencies have a conversion rate
                     applied:
                     <ul class="no-list-style">
@@ -32,7 +32,7 @@
                         @endif
                     </ul>
                 </div>
-                <form action="{{action('TransactionController@depositTransaction')}}" method="POST">
+                <form action="{{route('depositTransaction')}}" method="POST">
                     <div class="form-row">
                         {{csrf_field()}}
                         <div class="col-md-6 mb-2">

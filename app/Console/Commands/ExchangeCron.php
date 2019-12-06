@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Currency;
-use App\ExchangeRate;
+use App\Models\Currency;
+use App\Models\ExchangeRate;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Console\Command;
