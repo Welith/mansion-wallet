@@ -24,7 +24,6 @@ class CreateDepositRequest extends FormRequest
     public function rules()
     {
         return [
-            //
             "amount" => "required|numeric|min:0|regex:/(^(([a-zA-z]*)([\d]*))*?$)/u",
             "currency" => "required"
         ];

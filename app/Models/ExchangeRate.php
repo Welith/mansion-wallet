@@ -22,4 +22,16 @@ class ExchangeRate extends Model
     protected $fillable = [
         'currency_from', 'currency_to', 'rate',
     ];
+
+    /**
+     * Currency conversion to USD
+     * @param $amount
+     * @param $rate
+     * @return float
+     */
+    public static function exchangeCurrencyToBase($amount, $rate)
+    {
+        $base_amount = $amount / $rate;
+        return round((float)$base_amount, 2);
+    }
 }

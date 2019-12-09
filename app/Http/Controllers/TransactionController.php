@@ -9,6 +9,10 @@ use App\Models\Transaction;
 use App\Models\TransactionType;
 use App\Models\Wallet;
 
+/**
+ * Class TransactionController
+ * @package App\Http\Controllers
+ */
 class TransactionController extends Controller
 {
     protected $exchange_rates;
@@ -51,99 +55,42 @@ class TransactionController extends Controller
     }
 
     /**
-     * Calculates comission fee based on parameters
-     * @param $amount
-     * @param $fee
-     * @param $currency
-     * @param $action
-     * @return float|int
-     */
-    public function calcTransactionFee($amount, $fee, $currency, $action)
-    {
-        $usd_to_eur_rate = ExchangeRate::where(['currency_to' => 'EUR'])->first()->rate;
-        $usd_to_gbp_rate = ExchangeRate::where(['currency_to' => 'GBP'])->first()->rate;
-        $min_withdraw_fee_usd = \Config::get('constants.fees.fee_withdraw_min_eur') / $usd_to_eur_rate;
-        $min_withdraw_fee_gbp = $min_withdraw_fee_usd * $usd_to_gbp_rate;
-        $max_deposit_fee_usd = \Config::get('constants.fees.fee_deposit_max_eur') / $usd_to_eur_rate;
-        $max_deposit_fee_gbp = $max_deposit_fee_usd * $usd_to_gbp_rate;
-        $comission_fee = $amount * $fee;
-        if ($currency == 'USD') {
-            if ($action == 'deposit') {
-                $comission_fee = ($comission_fee <= $max_deposit_fee_usd) ? $comission_fee : $max_deposit_fee_usd;
-            } else if ($action == 'withdraw') {
-                $comission_fee = ($comission_fee >= $min_withdraw_fee_usd) ? $comission_fee : $min_withdraw_fee_usd;
-            }
-        } else if ($currency == 'EUR') {
-            if ($action == 'deposit') {
-                $comission_fee = ($comission_fee <= \Config::get('constants.fees.fee_deposit_max_eur')) ? $comission_fee : \Config::get('constants.fees.fee_deposit_max_eur');
-            } else if ($action == 'withdraw') {
-                $comission_fee = ($comission_fee >= \Config::get('constants.fees.fee_withdraw_min_eur')) ? $comission_fee : \Config::get('constants.fees.fee_withdraw_min_eur');
-            }
-        } else if ($currency == 'GBP') {
-            if ($action == 'deposit') {
-                $comission_fee = ($comission_fee <= $max_deposit_fee_gbp) ? $comission_fee : $max_deposit_fee_gbp;
-            } else if ($action == 'withdraw') {
-                $comission_fee = ($comission_fee >= $min_withdraw_fee_gbp) ? $comission_fee : $min_withdraw_fee_gbp;
-            }
-        }
-        return round((float)$comission_fee, 2);
-    }
-
-    /**
-     * Currency conversion to USD
-     * @param $amount
-     * @param $rate
-     * @return float
-     */
-    public function exchangeCurrencyToBase($amount, $rate)
-    {
-        $base_amount = $amount / $rate;
-        return round((float)$base_amount, 2);
-    }
-
-    /**
      * Carries out transaction based on request path
      * @param CreateDepositRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function transaction(CreateDepositRequest $request)
+    public function storeTransaction(CreateDepositRequest $request)
     {
         $validator = \Validator::make($request->all(), $request->rules());
         if ($validator->fails()) {
-            return redirect()->route($request->path())->withErrors($validator->errors());
+            return redirect()->route($request->path())->with(['error' => $validator->errors()]);
         }
-        $wallet = Wallet::with('user')->first();
-        $transaction = TransactionType::where(['type' => $request->path()])->first();
-        $deposit_trans = new Transaction();
-        $deposit_trans->wallet_id = $wallet->id;
-        $trans_type = $transaction->id;
-        $deposit_trans->transaction_type = $trans_type;
-        $transaction_fee = $transaction->fee;
-        $deposit_trans->amount = $request->amount;
+        $wallet = Wallet::with('user')->where(['user_id' => \Auth::user()->id])->first();
+        $db_transaction_type = TransactionType::where(['type' => $request->path()])->first();
+        $transaction = new Transaction();
+        $transaction->wallet_id = $wallet->id;
+        $transaction->transaction_type = $db_transaction_type->id;
+        $transaction_fee = $db_transaction_type->fee;
+        $transaction->amount = $request->amount;
         $trans_currency_code = Currency::where(['id' => $request->currency])->first()->code;
-        $deposit_trans->transaction_currency = $trans_currency_code;
-        $deposit_trans->save();
-        $comission_fee = $this->calcTransactionFee($request->amount, $transaction_fee, $trans_currency_code, $request->path());
-        $actual_deposit = $request->amount - $comission_fee;
-        if ($trans_currency_code == 'USD') {
-            if ($request->path() == 'deposit') {
-                $wallet->total_amount = $wallet->total_amount + $actual_deposit;
-            } else if($request->path() == 'withdraw') {
-                $wallet->total_amount = $wallet->total_amount - $actual_deposit;
-            }
-        } else {
-            $exchange_rate_conv = ExchangeRate::where(['currency_to' => $trans_currency_code])->first()->rate;
-            $base_currency_transaction = $this->exchangeCurrencyToBase($actual_deposit, $exchange_rate_conv);
-            dd($base_currency_transaction);
-            if ($request->path() == 'deposit') {
-                $wallet->total_amount = $wallet->total_amount + $base_currency_transaction;
-            } else if($request->path() == 'withdraw') {
+        $transaction->transaction_currency = $trans_currency_code;
+        $comission_fee = Transaction::calcTransactionFee($request->amount, $transaction_fee, $trans_currency_code, $request->path());
+        $actual_trans_amount = $request->amount - $comission_fee;
+        $exchange_rate_conv = ($trans_currency_code == 'USD') ? 1 : ExchangeRate::where(['currency_to' => $trans_currency_code])->first()->rate;
+        $base_currency_transaction = ExchangeRate::exchangeCurrencyToBase($actual_trans_amount, $exchange_rate_conv);
+        if ($request->path() == 'deposit') {
+            $wallet->total_amount = $wallet->total_amount + $base_currency_transaction;
+        } else if ($request->path() == 'withdraw') {
+            if ($wallet->total_amount >= $base_currency_transaction) {
                 $wallet->total_amount = $wallet->total_amount - $base_currency_transaction;
+            } else {
+                return redirect()->route($request->path())->with(['message' => 'Insufficient funds. Please check your funds.']);
             }
         }
+        $transaction->save();
         $wallet->save();
         if ($request->wantsJson()) {
-            return response()->json(['comission_fee' => $comission_fee, 'requested_amount' => round((float)$request->amount, 2), 'total_balance' => $wallet->total_amount, 'status' => 'Created ' . $request->path() . ' successfully.']);
+            return response()->json(['comission_fee' => round((float)$comission_fee, 2), 'requested_amount' => round((float)$request->amount, 2), 'total_balance' => round((float)$wallet->total_amount, 2), 'status' => 'Created ' . $request->path() . ' successfully.'], 302);
         }
         return redirect()->route('wallet')->with(['message' => 'Successfully made ' . $request->path() . '.']);
     }

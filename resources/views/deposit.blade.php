@@ -9,7 +9,7 @@
             <div class="card-body">
                 @if($errors)
                     @foreach ($errors->all() as $error)
-                        <div class="alert-danger alert-dismissible fade show">{{ $error }}</div>
+                        <div class="alert alert-danger alert-dismissible fade show">{{ $error }}</div>
                     @endforeach
                 @endif
                 <div class="text-center m-4">

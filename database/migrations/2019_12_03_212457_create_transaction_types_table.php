@@ -16,7 +16,7 @@ class CreateTransactionTypesTable extends Migration
         Schema::create('transaction_types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('type')->nullable();
-            $table->unsignedDecimal('fee', 5, 2)->nullable();
+            $table->float('fee', 8, 4)->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
