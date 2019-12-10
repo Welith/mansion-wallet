@@ -92,6 +92,6 @@ class TransactionController extends Controller
         if ($request->wantsJson()) {
             return response()->json(['comission_fee' => round((float)$comission_fee, 2), 'requested_amount' => round((float)$request->amount, 2), 'total_balance' => round((float)$wallet->total_amount, 2), 'status' => 'Created ' . $request->path() . ' successfully.'], 302);
         }
-        return redirect()->route('wallet')->with(['message' => 'Successfully made ' . $request->path() . '.']);
+        return redirect()->route('wallet')->with(['message' => 'Successfully made ' . $request->path() . ' for ' . round((float)$request->amount, 2) . " " . $trans_currency_code . '. Commission fee: ' . round((float)$comission_fee, 2) . " " . $trans_currency_code,]);
     }
 }
