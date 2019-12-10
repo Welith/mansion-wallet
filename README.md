@@ -2,61 +2,32 @@
 
 This is a simple e-wallet web application based on the requirements proposed in the assessment document.
 The base of the project is Laravel 6, combined with Bootstrap and jQuery. The project was then hosted on heroku,
-as it provided a fast, and freе app deployment interface.
+as it provided a fast, and freе app deployment interface -> http://mansion-wallet.herokuapp.com/.
 
-# Wallet Specifications
+### Wallet Specifications
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+The wallet has a base currency in USD. Initially it is given 50 USD bonus investment. Users can deposit and
+withdraw in EUR, GBP and USD currencies. There is a 0.03% fee for deposits and 0.3% for withdraws. The maximum deposit fee is
+5 EUR (5.55 USD, 4,23 GBP) and the minimum withdraw fee is 0.50 EUR (0.55 USD, 0.42 GBP). For now the user can 
+only change the wallet's name. See upcoming improvements [here](#improvements).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Set-up for local use
 
-## Laravel Sponsors
+The app requires git, laravel, mySQL and composer to run locally. Follow these steps to ensure correct system usage:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+1) The first step is to clone the git repo locally on your PC -> `git clone https://github.com/Welith/mansion-wallet.git`
+2) After installing [composer](https://getcomposer.org/download/) we will install all of the app's modules ->
+`
+composer install && composer update
+` 
+3) Next, we will migrate and seed our database (use [XAMPP](https://www.apachefriends.org/index.html) for Windows/Linux or [MAMP](https://www.mamp.info/en/downloads/) to install MySQL) ->
+`php artisan migrate && php artisan db:seed`
+4) Finally, we run the currency exchange script to get the latest [currencies](https://exchangeratesapi.io/) -> `php artisan schedule:run`.
+5) Type `php artisan serve` and go to http://localhost:3000.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
 
-## Contributing
+### Improvements
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# mansion-wallet
+For now the wallet has only one base currency, where for the next update EUR and GBP base currencies will be
+incorporated. A user profile dashboard will be implemented, containing graphs regarding deposit/withdraw activity.
+An admin panel will be added for user control and system monitoring.
