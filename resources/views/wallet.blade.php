@@ -12,7 +12,7 @@
                 Hello, {{$user->name}}
             </div>
             <div class="card-body">
-                <h5 class="card-title text-center">Your Funds: {{$user_wallet->total_amount}} {{$wallet_currency_code}}</h5>
+                <h5 class="card-title text-center">Your Funds ({{$user_wallet->name}}): {{$user_wallet->total_amount}} {{$wallet_currency_code}}</h5>
                 <p class="card-text text-center"> You have two options available: </p>
                 <div class="btn-group text-center">
                     <a class="btn btn-success" href="{{route('deposit')}}">Deposit</a>

@@ -17,7 +17,7 @@
                     @if (!Auth::user()->hasWallet())
                         <div class="container m-4">
                             <span class="text-justify">{{$user->name}} I can see you are a new user. The first step to use this app is to create a wallet.<br>
-                                As I am generous I am giving you 50 USD for free. Give your wallet a name and start making transactions.
+                                As I am generous I am giving you 50 USD for free. Give your wallet a name and start making transactions (George's primary wallet).
                             </span>
                         </div>
                         <div class="text-center">
