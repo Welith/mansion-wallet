@@ -59,7 +59,7 @@
                     @endif
                     @auth
                         <div>
-                            @if(!Auth::user()->wallet())
+                            @if(Auth::user()->hasWallet())
                                 <a class="btn btn-info btn-white-text" data-toggle="modal" data-target="#walletEditForm"
                                    id="editWallet">
                                     Edit wallet name
