@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EditWalletRequest;
 use App\Models\Currency;
-use App\Http\Requests\WalletStoreRequest;
+use App\Http\Requests\StoreWalletRequest;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 
@@ -46,7 +47,7 @@ class WalletController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(WalletStoreRequest $request)
+    public function storeWallet(StoreWalletRequest $request)
     {
         // Validate input
         $validator = \Validator::make($request->all(), $request->rules());
@@ -65,6 +66,29 @@ class WalletController extends Controller
         $wallet->total_amount = 50;
         $wallet->currency = 'USD';
         $wallet->save();
-        return response()->json(['success' => 'Wallet was successfully added.', 'data' => $request->toArray()]);
+        return response()->json(['success' => $request->name . ' was successfully added.', 'data' => $request->toArray()]);
+    }
+    /**
+     * Edit wallet name
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function editWallet(EditWalletRequest $request)
+    {
+        // Validate input
+        $validator = \Validator::make($request->all(), $request->rules());
+        if ($validator->fails()) {
+            if($request->ajax())
+            {
+                return response()->json([
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+        }
+        // Store initial walllet state
+        $wallet = Wallet::where(['user_id' => \Auth::user()->id])->first();
+        $wallet->name = $request->name;
+        $wallet->save();
+        return response()->json(['success' => $request->name . ' was successfully re-named.', 'data' => $request->toArray()]);
     }
 }

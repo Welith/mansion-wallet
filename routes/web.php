@@ -14,7 +14,8 @@
 Auth::routes();
 Route::get('/deposit', 'TransactionController@depositView')->name('deposit');
 Route::get('/withdraw', 'TransactionController@withdrawView')->name('withdraw');
-Route::get('/{wallet?}', ['as' => 'wallet', 'uses' => 'WalletController@index']);
-Route::post('/wallet/create', 'WalletController@store')->name('confirmWalletName');
+Route::get('/{wallet?}',  'WalletController@index')->name('wallet');
+Route::post('/wallet/create', 'WalletController@storeWallet')->name('confirmWalletName');
 Route::post('/deposit', 'TransactionController@storeTransaction')->name('depositTransaction');
 Route::post('/withdraw', 'TransactionController@storeTransaction')->name('withdrawTransaction');
+Route::post('/edit/wallet-name', 'WalletController@editWallet')->name('editWalletName');

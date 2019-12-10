@@ -50,7 +50,6 @@
                 <ul class="navbar-nav mr-auto">
 
                 </ul>
-
                 <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ml-auto">
                     @if(Route::currentRouteName() == 'login')
@@ -59,7 +58,41 @@
                         <li><a class="btn btn-success" href="{{ url('/login') }}">Login</a></li>
                     @endif
                     @auth
-                        <li class="nav-item dropdown">
+                        <div>
+                            @if(!Auth::user()->wallet())
+                                <a class="btn btn-info btn-white-text" data-toggle="modal" data-target="#walletEditForm"
+                                   id="editWallet">
+                                    Edit wallet name
+                                </a>
+                                <div class="modal fade bg-dark" id="walletEditForm" tabindex="-1" role="dialog"
+                                     aria-labelledby="walletLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-notify modal-warning" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header text-center">
+                                                <h4 class="modal-title w-100 font-weight-bold">Edit you wallet's
+                                                    name</h4>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body mx-3 main-box">
+                                                <div class="md-form mb-5">
+                                                    <input type="text" id="newWalletName"
+                                                           class="form-control validate">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer d-flex justify-content-center">
+                                                <button class="btn btn-default btn-primary" id="nameEdit"
+                                                        data-redirect="{{route('wallet')}}"
+                                                        data-url="{{route('editWalletName')}}">Confirm
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             <a class="btn btn-danger" href="{{ route('logout') }}"
                                onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -69,7 +102,7 @@
                                   style="display: none;">
                                 @csrf
                             </form>
-                        </li>
+                        </div>
                     @endauth
                 </ul>
             </div>

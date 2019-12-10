@@ -52,3 +52,7 @@ html, body {
 .no-list-style {
     list-style: none;
 }
+
+.btn-white-text {
+    color: white !important;
+}
