@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Currency;
 use App\Models\ExchangeRate;
-use App\Http\Requests\CreateDepositRequest;
+use App\Http\Requests\CreateTransactionRequest;
 use App\Models\Transaction;
 use App\Models\TransactionType;
 use App\Models\Wallet;
@@ -56,10 +56,10 @@ class TransactionController extends Controller
 
     /**
      * Carries out transaction based on request path
-     * @param CreateDepositRequest $request
+     * @param CreateTransactionRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function storeTransaction(CreateDepositRequest $request)
+    public function storeTransaction(CreateTransactionRequest $request)
     {
         $validator = \Validator::make($request->all(), $request->rules());
         if ($validator->fails()) {

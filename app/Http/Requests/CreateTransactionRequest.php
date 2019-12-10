@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateDepositRequest extends FormRequest
+class CreateTransactionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class CreateDepositRequest extends FormRequest
     public function rules()
     {
         return [
-            "amount" => "required|numeric|min:0|regex:/(^(([a-zA-z]*)([\d]*))*?$)/u",
+            "amount" => "required|numeric|min:0|regex:/^\d+([\,\.]\d{1,2})?$/u",
             "currency" => "required"
         ];
     }
