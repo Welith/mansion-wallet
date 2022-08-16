@@ -5,6 +5,11 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
+  job_with_error:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run: exit 1
   save_hello_world_output:
     docker:
       - image: cimg/base:stable
@@ -39,8 +44,4 @@ jobs:
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello
-      - save_hello_world_output
-      - print_output_file:
-          requires:
-            - save_hello_world_output
+      - job_with_error
