@@ -10,6 +10,10 @@ jobs:
       - image: cimg/base:stable
     steps:
       - run: exit 1
+      - run:
+         name: on error
+         command: echo "Fixed error"
+         when: on_fail
   save_hello_world_output:
     docker:
       - image: cimg/base:stable
